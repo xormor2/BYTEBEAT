@@ -29,7 +29,7 @@ void initSound()
     TCCR2B &= ~_BV(WGM22);
 
     // Do non-inverting PWM on pin OC2A (p.155)
-    // On the Arduino this is pin 11.
+    // On the Arduino this is pin 11 ie. the speakerPin
     TCCR2A = (TCCR2A | _BV(COM2A1)) & ~_BV(COM2A0);
     TCCR2A &= ~(_BV(COM2B1) | _BV(COM2B0));
     // No prescaler (p.158)
@@ -56,5 +56,6 @@ void initSound()
     // Enable interrupt when TCNT1 == OCR1A (p.136)
     TIMSK1 |= _BV(OCIE1A);
 
+    // Resume the interrupts.
     sei();
 }

@@ -329,6 +329,8 @@ ISR(TIMER1_COMPA_vect)
   }
 
   OCR2A = value;
+
+  // shiftLeftPot has values -7 to 7
   t += shiftLeftPot;
 
   // This is suspicious too.
