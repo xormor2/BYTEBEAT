@@ -11,17 +11,17 @@ extern int bBottom;
 extern int bTop;
 extern int cBottom;
 extern int cTop;
-extern bool isButton1Active;
-extern bool isButton2Active;
-extern bool isLongPress2Active;
-extern bool isLongPress1Active, isClockOutMode;
+extern bool isRightButtonActive;
+extern bool isLeftButtonActive;
+extern bool isLongPressLeftActive;
+extern bool isLongPressRightActive, isClockOutMode;
 extern int old_A_Pot;
 extern int shift_A_Pot;
 extern int old_SAMPLE_RATE;
 extern int SAMPLE_RATE;
 extern int a, b, c, debounceRange;
-extern long button1Timer, longPress1Time, button2Timer, longPress2Time;
-extern byte programNumber, upButtonState, downButtonState, lastButtonState, totalPrograms, clocksOut;
+extern long rightButtonTimer, longPressRightTime, leftButtonTimer, longPressLeftTime;
+extern byte programNumber, rightButtonState, leftButtonState, lastButtonState, totalPrograms, clocksOut;
 
 int softDebounce(int readCV, int oldRead)
 {
@@ -77,28 +77,28 @@ void buttonsManager()
 {
     bool pressBothButtons = false;
     // start button 1
-    if (digitalRead(upButtonPin) == LOW)
+    if (digitalRead(rightButtonPin) == LOW)
     {
-        if (isButton1Active == false)
+        if (isRightButtonActive == false)
         {
-            isButton1Active = true;
-            button1Timer = millis();
+            isRightButtonActive = true;
+            rightButtonTimer = millis();
             Serial.println("RIGHT button short press");
         }
-        if ((millis() - button1Timer > longPress1Time) && (isLongPress1Active == false))
+        if ((millis() - rightButtonTimer > longPressRightTime) && (isLongPressRightActive == false))
         {
-            isLongPress1Active = true;
+            isLongPressRightActive = true;
 
             Serial.println("RIGHT long press ON");
         }
     }
     else
     {
-        if (isButton1Active == true)
+        if (isRightButtonActive == true)
         {
-            if (isLongPress1Active == true)
+            if (isLongPressRightActive == true)
             {
-                isLongPress1Active = false;
+                isLongPressRightActive = false;
 
                 Serial.println("RIGHT long press RELEASE");
             }
@@ -118,33 +118,33 @@ void buttonsManager()
                 Serial.println(programNumber);
                 ledManager();
             }
-            isButton1Active = false;
+            isRightButtonActive = false;
         }
     }
     // end RIGHT button
     // start LEFT button
-    if (digitalRead(downButtonPin) == LOW)
+    if (digitalRead(leftButtonPin) == LOW)
     {
-        if (isButton2Active == false)
+        if (isRightButtonActive == false)
         {
-            isButton2Active = true;
-            button2Timer = millis();
+            isRightButtonActive = true;
+            leftButtonTimer = millis();
             Serial.println("LEFT button short press");
         }
-        if ((millis() - button2Timer > longPress2Time) && (isLongPress2Active == false))
+        if ((millis() - leftButtonTimer > longPressLeftTime) && (isLongPressLeftActive == false))
         {
-            isLongPress2Active = true;
+            isLongPressLeftActive = true;
 
             Serial.println("LEFT BUTTON long press ON");
         }
     }
     else
     {
-        if (isButton2Active == true)
+        if (isLeftButtonActive == true)
         {
-            if (isLongPress2Active == true)
+            if (isLongPressLeftActive == true)
             {
-                isLongPress2Active = false;
+                isLongPressLeftActive = false;
                 Serial.println("LEFT BUTTON long press release");
                 pressBothButtons = true;
                 // isClockOutMode = !isClockOutMode;
@@ -153,7 +153,7 @@ void buttonsManager()
             }
             else
             {
-                if (downButtonState == LOW)
+                if (leftButtonState == LOW)
                 {
                     if (programNumber > 1)
                     {
@@ -166,12 +166,13 @@ void buttonsManager()
                     Serial.println("LEFT BUTTON short release");
                 }
                 ledManager();
-                isButton2Active = false;
+                isLeftButtonActive = false;
             }
         }
         // end button 2
 
-        if (!isLongPress2Active && isLongPress1Active && pressBothButtons)
+        // TODO Figure this out
+        if (!isLongPressLeftActive && isLongPressRightActive && pressBothButtons)
         {
             Serial.println("HACKKK");
             isClockOutMode = !isClockOutMode;

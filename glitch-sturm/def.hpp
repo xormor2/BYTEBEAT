@@ -1,7 +1,7 @@
 #define ledPin 13
 #define speakerPin 11
-#define upButtonPin 2
-#define downButtonPin 4
+#define rightButtonPin 2
+#define leftButtonPin 4
 #define progBit0Pin 7
 #define progBit1Pin 8
 #define progBit2Pin 9

@@ -22,6 +22,8 @@ void initSound()
 
     /*
     TCCR2A – Timer/Counter Control Register A
+    WGM21 and WGM20 turn on
+    WGM22 turn off
     */
     TCCR2A |= _BV(WGM21) | _BV(WGM20);
     TCCR2B &= ~_BV(WGM22);

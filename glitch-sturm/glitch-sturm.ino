@@ -27,8 +27,8 @@ long t = 0;
 volatile int a, b, c;
 volatile int value;
 byte programNumber = 1;
-byte upButtonState = 0;
-byte downButtonState = 0;
+byte rightButtonState = 0;
+byte leftButtonState = 0;
 byte lastButtonState = 0;
 byte totalPrograms = 16;
 byte clocksOut = 0;
@@ -44,14 +44,14 @@ bool isClockOutMode = false;
 bool isSerialValues = true;
 unsigned long time_now = 0;
 
-long button1Timer = 0;
-long longPress1Time = 400;
-long button2Timer = 0;
-long longPress2Time = 400;
-boolean isButton1Active = false;
-boolean isLongPress1Active = false;
-boolean isButton2Active = false;
-boolean isLongPress2Active = false;
+long rightButtonTimer = 0;
+long longPressRightTime = 400;
+long leftButtonTimer = 0;
+long longPressLeftTime = 400;
+boolean isRightButtonActive = false;
+boolean isLongPressRightActive = false;
+boolean isLeftButtonActive = false;
+boolean isLongPressLeftActive = false;
 
 int shift_A_Pot = 1;
 int old_A_Pot = 1;
@@ -72,8 +72,8 @@ void setup()
   pinMode(progBit2Pin, OUTPUT);
   pinMode(progBit3Pin, OUTPUT);
 
-  pinMode(upButtonPin, INPUT_PULLUP);
-  pinMode(downButtonPin, INPUT_PULLUP);
+  pinMode(rightButtonPin, INPUT_PULLUP);
+  pinMode(leftButtonPin, INPUT_PULLUP);
 
   initSound();
   ledManager();
