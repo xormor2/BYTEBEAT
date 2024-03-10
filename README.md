@@ -9,8 +9,7 @@ Electronic glitch music experimentation repository.
 
 ## putchar-beats
 
-Collection of ulta-slim C programs.
-Compile the .c files with gcc or clang (no dependencies) and run with `./binaryfile > /dev/dsp` (tested in Debian bookworm 12 stable).
+Collection of ulta-slim C programs with different bytebeat algorithms.
 
 ## glitch-sturm
 
