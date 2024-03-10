@@ -35,6 +35,8 @@ byte lastButtonState = 0;
 byte totalPrograms = 16;
 byte clocksOut = 0;
 int cyclebyte = 0;
+
+// These are the max and min values for the three pots.
 volatile int aTop = 99;
 volatile int aBottom = 0;
 volatile int bTop = 99;
@@ -61,6 +63,7 @@ int oldLeftPot = 1;
 // TODO these aren't used?
 int shiftRightPot = 0;
 int oldRightPot = 0;
+
 int SAMPLE_RATE = 16384;
 int old_SAMPLE_RATE = SAMPLE_RATE;
 
@@ -70,11 +73,11 @@ void setup()
   // ledPin isn't used at all, it's the builtin led.
   pinMode(ledPin, OUTPUT);
 
-  // These are the glitch storm 3 leds.
-  pinMode(progBit0Pin, OUTPUT);
-  pinMode(progBit1Pin, OUTPUT);
-  pinMode(progBit2Pin, OUTPUT);
-  pinMode(progBit3Pin, OUTPUT);
+  // These are the glitch storm four leds.
+  pinMode(ledBit0Pin, OUTPUT);
+  pinMode(ledBit1Pin, OUTPUT);
+  pinMode(ledBit2Pin, OUTPUT);
+  pinMode(ledBit3Pin, OUTPUT);
 
   pinMode(rightButtonPin, INPUT_PULLUP);
   pinMode(leftButtonPin, INPUT_PULLUP);
@@ -148,7 +151,7 @@ ISR(TIMER1_COMPA_vect)
     cBottom = 0;
     break;
   case 2:
-
+    // What on earth is this?
     if (t > 65536)
       t = -65536;
     value = (t >> c | a | t >> (t >> 16)) * b + ((t >> (b + 1)) & (a + 1));
@@ -326,8 +329,9 @@ ISR(TIMER1_COMPA_vect)
   }
 
   OCR2A = value;
-  t += shift_A_Pot;
+  t += shiftLeftPot;
 
+  // This is suspicious too.
   // timing  clockout easter-egg mode
   cyclebyte++;
   if (cyclebyte == 1024)

@@ -2,10 +2,10 @@
 #define speakerPin 11
 #define rightButtonPin 2
 #define leftButtonPin 4
-#define progBit0Pin 7
-#define progBit1Pin 8
-#define progBit2Pin 9
-#define progBit3Pin 10
+#define ledBit0Pin 7
+#define ledBit1Pin 8
+#define ledBit2Pin 9
+#define ledBit3Pin 10
 #define isDebugging false
 #define leftPotPin 0
 #define midPotPin 1
