@@ -1,25 +1,21 @@
-// Glitch Storm 0.99
+// Based on Glitch Storm 0.99 code
 // CC By Sa Spherical Sound Society 2020
 // Heavy inspiration in Bytebeat (Viznut)
 // Some equations are empty. You can collaborate sending your new finding cool sounding ones to the repository
 // https://github.com/spherical-sound-society/glitch-storm
 //
+// CC By Sa jeesus-bock & xormor2 2024
 
 #include <stdint.h>
 #include <avr/interrupt.h>
 #include <avr/io.h>
 #include <avr/pgmspace.h>
-#include <avr/iom328p.h>
+#include <HardwareSerial.h>
 
-#define ledPin 13
-#define speakerPin 11
-#define upButtonPin 2
-#define downButtonPin 4
-#define progBit0Pin 7
-#define progBit1Pin 8
-#define progBit2Pin 9
-#define progBit3Pin 10
-#define isDebugging false
+#include "def.hpp"
+#include "initsound.hpp"
+#include "controlmanagers.hpp"
+#include "ledmanager.hpp"
 
 // int SAMPLE_RATE = 4096;
 // int SAMPLE_RATE = 8192;
@@ -76,7 +72,7 @@ void setup()
   pinMode(downButtonPin, INPUT_PULLUP);
 
   initSound();
-  ledCounter();
+  ledManager();
 
   if (isDebugging)
   {
@@ -112,93 +108,6 @@ void loop()
   // OCR1A = F_CPU / SAMPLE_RATE;
 }
 
-void potsManager()
-{
-
-  if (!isButton1Active && !isButton2Active)
-  {
-    a = map(analogRead(0), 0, 1023, aBottom, aTop);
-    b = map(analogRead(1), 0, 1023, bBottom, bTop);
-    c = map(analogRead(2), 0, 1023, cBottom, cTop);
-  }
-  if (isLongPress2Active)
-  {
-
-    // left button is pressed
-    leftLongPressActions();
-  }
-  if (isLongPress1Active)
-  {
-
-    // right button is pressed
-    rightLongPressActions();
-  }
-}
-void rightLongPressActions()
-{
-
-  // REVERSE TIME *********************
-  int actual_A_Pot = map(analogRead(0), 0, 1023, -7, 7);
-
-  if (old_A_Pot != actual_A_Pot)
-  {
-
-    shift_A_Pot = actual_A_Pot;
-  }
-  old_A_Pot = actual_A_Pot;
-
-  if (shift_A_Pot == 0)
-  {
-    // prevents the engine to stop
-    shift_A_Pot = 1;
-  }
-}
-void leftLongPressActions()
-{
-
-  // SAMPLE RATE *************************************
-
-  old_SAMPLE_RATE = SAMPLE_RATE;
-  // int actual_SAMPLE_RATE = analogRead(1);
-  SAMPLE_RATE = softDebounce(analogRead(0), SAMPLE_RATE);
-
-  // actual_SAMPLE_RATE=map(analogRead(1), 0, 1023, 256, 16384);
-  if (SAMPLE_RATE != old_SAMPLE_RATE)
-  {
-    // el mapeo se hace aqui
-    // map(analogRead(1), 0, 1023, 256, 16384);
-    int mappedSAMPLE_RATE = map(SAMPLE_RATE, 0, 1023, 256, 16384);
-    OCR1A = F_CPU / mappedSAMPLE_RATE;
-  }
-
-  // TO BE PROGRAMMED ELASTIC STUFF ***********************
-  // shift_C_Pot = map(analogRead(2), 0, 1023, 0, 15);
-}
-
-void ledCounter()
-{
-  int val;
-  if (isClockOutMode)
-  {
-    // show clocks
-    clocksOut++;
-    if (clocksOut == 16)
-    {
-      clocksOut = 0;
-    }
-    val = clocksOut;
-  }
-  else
-  {
-    // show program number in binary
-    val = programNumber;
-  }
-  digitalWrite(progBit0Pin, bitRead(val, 0));
-  digitalWrite(progBit1Pin, bitRead(val, 1));
-  digitalWrite(progBit2Pin, bitRead(val, 2));
-  digitalWrite(progBit3Pin, bitRead(val, 3));
-}
-
 void printValues()
 {
   Serial.print("programNumber: ");
@@ -209,14 +118,6 @@ void printValues()
   Serial.print(b);
   Serial.print(" C: ");
   Serial.println(c);
-}
-int softDebounce(int readCV, int oldRead)
-{
-  if (abs(readCV - oldRead) > debounceRange)
-  {
-    return readCV;
-  }
-  return oldRead;
 }
 
 ISR(TIMER1_COMPA_vect)
@@ -422,153 +323,7 @@ ISR(TIMER1_COMPA_vect)
     cyclebyte = 0;
     if (isClockOutMode)
     {
-      ledCounter();
-    }
-  }
-}
-
-void initSound()
-{
-  pinMode(speakerPin, OUTPUT);
-
-  ASSR &= ~(_BV(EXCLK) | _BV(AS2));
-
-  TCCR2A |= _BV(WGM21) | _BV(WGM20);
-  TCCR2B &= ~_BV(WGM22);
-
-  // Do non-inverting PWM on pin OC2A (p.155)
-  // On the Arduino this is pin 11.
-  TCCR2A = (TCCR2A | _BV(COM2A1)) & ~_BV(COM2A0);
-  TCCR2A &= ~(_BV(COM2B1) | _BV(COM2B0));
-  // No prescaler (p.158)
-  TCCR2B = (TCCR2B & ~(_BV(CS12) | _BV(CS11))) | _BV(CS10);
-
-  // Set initial pulse width to the first sample.
-  OCR2A = 0;
-
-  // Set up Timer 1 to send a sample every interrupt.
-  cli();
-
-  // Set CTC mode (Clear Timer on Compare Match) (p.133)
-  // Have to set OCR1A *after*, otherwise it gets reset to 0!
-  TCCR1B = (TCCR1B & ~_BV(WGM13)) | _BV(WGM12);
-  TCCR1A = TCCR1A & ~(_BV(WGM11) | _BV(WGM10));
-
-  // No prescaler (p.134)
-  TCCR1B = (TCCR1B & ~(_BV(CS12) | _BV(CS11))) | _BV(CS10);
-
-  // Set the compare register (OCR1A).
-  // OCR1A is a 16-bit register, so we have to do this with
-  // interrupts disabled to be safe.
-  OCR1A = F_CPU / SAMPLE_RATE; // 16e6 / 8000 = 2000
-  // Enable interrupt when TCNT1 == OCR1A (p.136)
-  TIMSK1 |= _BV(OCIE1A);
-
-  sei();
-}
-
-void buttonsManager()
-{
-  bool pressBothButtons = false;
-  // start button 1
-  if (digitalRead(upButtonPin) == LOW)
-  {
-    if (isButton1Active == false)
-    {
-      isButton1Active = true;
-      button1Timer = millis();
-      Serial.println("RIGHT button short press");
-    }
-    if ((millis() - button1Timer > longPress1Time) && (isLongPress1Active == false))
-    {
-      isLongPress1Active = true;
-
-      Serial.println("RIGHT long press ON");
-    }
-  }
-  else
-  {
-    if (isButton1Active == true)
-    {
-      if (isLongPress1Active == true)
-      {
-        isLongPress1Active = false;
-
-        Serial.println("RIGHT long press RELEASE");
-      }
-      else
-      {
-
-        if (programNumber != totalPrograms)
-        {
-          programNumber++;
-        }
-        else if (programNumber == totalPrograms)
-        {
-          programNumber = 1;
-        }
-        Serial.println("RIGHT button short release");
-        Serial.print("PROGRAM: ");
-        Serial.println(programNumber);
-        ledCounter();
-      }
-      isButton1Active = false;
-    }
-  }
-  // end RIGHT button
-  // start LEFT button
-  if (digitalRead(downButtonPin) == LOW)
-  {
-    if (isButton2Active == false)
-    {
-      isButton2Active = true;
-      button2Timer = millis();
-      Serial.println("LEFT button short press");
-    }
-    if ((millis() - button2Timer > longPress2Time) && (isLongPress2Active == false))
-    {
-      isLongPress2Active = true;
-
-      Serial.println("LEFT BUTTON long press ON");
-    }
-  }
-  else
-  {
-    if (isButton2Active == true)
-    {
-      if (isLongPress2Active == true)
-      {
-        isLongPress2Active = false;
-        Serial.println("LEFT BUTTON long press release");
-        pressBothButtons = true;
-        // isClockOutMode = !isClockOutMode;
-        // we only change program in short pressed, not long ones
-        programNumber++;
-      }
-      else
-      {
-        if (downButtonState == LOW)
-        {
-          if (programNumber > 1)
-          {
-            programNumber--;
-          }
-          else if (programNumber == 1)
-          {
-            programNumber = totalPrograms;
-          }
-          Serial.println("LEFT BUTTON short release");
-        }
-        ledCounter();
-        isButton2Active = false;
-      }
-    }
-    // end button 2
-
-    if (!isLongPress2Active && isLongPress1Active && pressBothButtons)
-    {
-      Serial.println("HACKKK");
-      isClockOutMode = !isClockOutMode;
+      ledManager();
     }
   }
 }

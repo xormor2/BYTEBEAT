@@ -1,0 +1,2 @@
+void potsManager();
+void buttonsManager();
