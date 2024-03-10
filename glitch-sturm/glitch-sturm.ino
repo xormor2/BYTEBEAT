@@ -107,6 +107,8 @@ void loop()
     }
   }
 
+  // This is a whole piece of code just commented out
+  // We don't even have timestretch function.
   // long putin=analogRead(3);
   // int d = map(analogRead(3), 0, 1023, 0, 1023);
   //  timestrech(d);

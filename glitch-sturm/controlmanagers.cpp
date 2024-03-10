@@ -184,20 +184,20 @@ void buttonsManager()
 void potsManager()
 {
 
-    if (!isButton1Active && !isButton2Active)
+    if (!isRightButtonActive && !isLeftButtonActive)
     {
         // map(value, fromLow, fromHigh, toLow, toHigh)
         a = map(analogRead(0), 0, 1023, aBottom, aTop);
         b = map(analogRead(1), 0, 1023, bBottom, bTop);
         c = map(analogRead(2), 0, 1023, cBottom, cTop);
     }
-    if (isLongPress2Active)
+    if (isLongPressLeftActive)
     {
 
         // left button is pressed
         leftLongPressActions();
     }
-    if (isLongPress1Active)
+    if (isLongPressRightActive)
     {
 
         // right button is pressed
