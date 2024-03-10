@@ -1,12 +1,19 @@
 # BYTEBEAT
 
-Electronic glitch music, compile the .c files with gcc or clang (no dependencies) and run with binaryfile>/dev/dsp (tested in Debian bookworm 12 stable)
+Electronic glitch music experimentation repository.
 
-## More info
+### More info
+
 - Links and intro http://canonical.org/~kragen/bytebeat/
 - Articles http://viznut.fi/en/
 
-# glitch-sturm
+## putchar-beats
+
+Collection of ulta-slim C programs.
+Compile the .c files with gcc or clang (no dependencies) and run with `./binaryfile > /dev/dsp` (tested in Debian bookworm 12 stable).
+
+## glitch-sturm
+
 Revival of original (abandoned?) Glitch Storm codebase from https://github.com/spherical-sound-society/glitch-storm
 
 Glitch Strom MK2 is an Arduino Nano based glitch synthesizer, buy and read more at
