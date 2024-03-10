@@ -22,8 +22,8 @@ void ledManager()
         // show program number in binary
         val = programNumber;
     }
-    digitalWrite(progBit0Pin, bitRead(val, 0));
-    digitalWrite(progBit1Pin, bitRead(val, 1));
-    digitalWrite(progBit2Pin, bitRead(val, 2));
-    digitalWrite(progBit3Pin, bitRead(val, 3));
+    digitalWrite(ledBit0Pin, bitRead(val, 0));
+    digitalWrite(ledBit1Pin, bitRead(val, 1));
+    digitalWrite(ledBit2Pin, bitRead(val, 2));
+    digitalWrite(ledBit3Pin, bitRead(val, 3));
 }

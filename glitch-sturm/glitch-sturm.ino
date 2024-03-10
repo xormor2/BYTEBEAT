@@ -1,10 +1,10 @@
+// CC By Sa jeesus-bock & xormor2 2024
+//
 // Based on Glitch Storm 0.99 code
 // CC By Sa Spherical Sound Society 2020
 // Heavy inspiration in Bytebeat (Viznut)
 // Some equations are empty. You can collaborate sending your new finding cool sounding ones to the repository
 // https://github.com/spherical-sound-society/glitch-storm
-//
-// CC By Sa jeesus-bock & xormor2 2024
 
 #include <stdint.h>
 #include <avr/interrupt.h>
@@ -17,22 +17,26 @@
 #include "controlmanagers.hpp"
 #include "ledmanager.hpp"
 
+// Are these possible sample rates. I think deprecated.
 // int SAMPLE_RATE = 4096;
 // int SAMPLE_RATE = 8192;
 // int SAMPLE_RATE = 9216;
 // int SAMPLE_RATE = 22000;
 
+// Very random values, TODO test these.
 int debounceRange = 20; // 5
 long t = 0;
 volatile int a, b, c;
 volatile int value;
 byte programNumber = 1;
-byte upButtonState = 0;
-byte downButtonState = 0;
+byte rightButtonState = 0;
+byte leftButtonState = 0;
 byte lastButtonState = 0;
 byte totalPrograms = 16;
 byte clocksOut = 0;
 int cyclebyte = 0;
+
+// These are the max and min values for the three pots.
 volatile int aTop = 99;
 volatile int aBottom = 0;
 volatile int bTop = 99;
@@ -44,32 +48,39 @@ bool isClockOutMode = false;
 bool isSerialValues = true;
 unsigned long time_now = 0;
 
-long button1Timer = 0;
-long longPress1Time = 400;
-long button2Timer = 0;
-long longPress2Time = 400;
-boolean isButton1Active = false;
-boolean isLongPress1Active = false;
-boolean isButton2Active = false;
-boolean isLongPress2Active = false;
+long rightButtonTimer = 0;
+long longPressRightTime = 400;
+long leftButtonTimer = 0;
+long longPressLeftTime = 400;
+boolean isRightButtonActive = false;
+boolean isLongPressRightActive = false;
+boolean isLeftButtonActive = false;
+boolean isLongPressLeftActive = false;
 
-int shift_A_Pot = 1;
-int old_A_Pot = 1;
+int shiftLeftPot = 1;
+int oldLeftPot = 1;
+
+// TODO these aren't used?
+int shiftRightPot = 0;
+int oldRightPot = 0;
+
 int SAMPLE_RATE = 16384;
 int old_SAMPLE_RATE = SAMPLE_RATE;
-byte shift_C_Pot = 0;
-byte old_C_Pot = 0;
 
 void setup()
 {
-  pinMode(ledPin, OUTPUT);
-  pinMode(progBit0Pin, OUTPUT);
-  pinMode(progBit1Pin, OUTPUT);
-  pinMode(progBit2Pin, OUTPUT);
-  pinMode(progBit3Pin, OUTPUT);
 
-  pinMode(upButtonPin, INPUT_PULLUP);
-  pinMode(downButtonPin, INPUT_PULLUP);
+  // ledPin isn't used at all, it's the builtin led.
+  pinMode(ledPin, OUTPUT);
+
+  // These are the glitch storm four leds.
+  pinMode(ledBit0Pin, OUTPUT);
+  pinMode(ledBit1Pin, OUTPUT);
+  pinMode(ledBit2Pin, OUTPUT);
+  pinMode(ledBit3Pin, OUTPUT);
+
+  pinMode(rightButtonPin, INPUT_PULLUP);
+  pinMode(leftButtonPin, INPUT_PULLUP);
 
   initSound();
   ledManager();
@@ -122,7 +133,11 @@ void printValues()
 
 ISR(TIMER1_COMPA_vect)
 {
-
+  /*
+  t is the increasing value of timer.
+  a, b, c are pins 0,1,2 values read and mapped to limits set by aTop and aBottom values
+  these pins are connected to the potentiometers. TODO: figure out which pin for which knob.
+  */
   switch (programNumber)
   {
   case 1:
@@ -136,7 +151,7 @@ ISR(TIMER1_COMPA_vect)
     cBottom = 0;
     break;
   case 2:
-
+    // What on earth is this?
     if (t > 65536)
       t = -65536;
     value = (t >> c | a | t >> (t >> 16)) * b + ((t >> (b + 1)) & (a + 1));
@@ -314,8 +329,11 @@ ISR(TIMER1_COMPA_vect)
   }
 
   OCR2A = value;
-  t += shift_A_Pot;
 
+  // shiftLeftPot has values -7 to 7
+  t += shiftLeftPot;
+
+  // This is suspicious too.
   // timing  clockout easter-egg mode
   cyclebyte++;
   if (cyclebyte == 1024)
