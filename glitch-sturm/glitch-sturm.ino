@@ -1,10 +1,10 @@
+// CC By Sa jeesus-bock & xormor2 2024
+//
 // Based on Glitch Storm 0.99 code
 // CC By Sa Spherical Sound Society 2020
 // Heavy inspiration in Bytebeat (Viznut)
 // Some equations are empty. You can collaborate sending your new finding cool sounding ones to the repository
 // https://github.com/spherical-sound-society/glitch-storm
-//
-// CC By Sa jeesus-bock & xormor2 2024
 
 #include <stdint.h>
 #include <avr/interrupt.h>
