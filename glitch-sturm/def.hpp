@@ -7,3 +7,6 @@
 #define progBit2Pin 9
 #define progBit3Pin 10
 #define isDebugging false
+#define leftPotPin 0
+#define midPotPin 1
+#define rightPotPin 2

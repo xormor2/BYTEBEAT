@@ -17,11 +17,13 @@
 #include "controlmanagers.hpp"
 #include "ledmanager.hpp"
 
+// Are these possible sample rates. I think deprecated.
 // int SAMPLE_RATE = 4096;
 // int SAMPLE_RATE = 8192;
 // int SAMPLE_RATE = 9216;
 // int SAMPLE_RATE = 22000;
 
+// Very random values, TODO test these.
 int debounceRange = 20; // 5
 long t = 0;
 volatile int a, b, c;
@@ -53,12 +55,14 @@ boolean isLongPressRightActive = false;
 boolean isLeftButtonActive = false;
 boolean isLongPressLeftActive = false;
 
-int shift_A_Pot = 1;
-int old_A_Pot = 1;
+int shiftLeftPot = 1;
+int oldLeftPot = 1;
+
+// TODO these aren't used?
+int shiftRightPot = 0;
+int oldRightPot = 0;
 int SAMPLE_RATE = 16384;
 int old_SAMPLE_RATE = SAMPLE_RATE;
-byte shift_C_Pot = 0;
-byte old_C_Pot = 0;
 
 void setup()
 {

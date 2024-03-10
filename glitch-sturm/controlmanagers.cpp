@@ -15,14 +15,15 @@ extern bool isRightButtonActive;
 extern bool isLeftButtonActive;
 extern bool isLongPressLeftActive;
 extern bool isLongPressRightActive, isClockOutMode;
-extern int old_A_Pot;
-extern int shift_A_Pot;
+extern int oldLeftPot;
+extern int shiftLeftPot;
 extern int old_SAMPLE_RATE;
 extern int SAMPLE_RATE;
 extern int a, b, c, debounceRange;
 extern long rightButtonTimer, longPressRightTime, leftButtonTimer, longPressLeftTime;
 extern byte programNumber, rightButtonState, leftButtonState, lastButtonState, totalPrograms, clocksOut;
 
+// Only change if the change is big enough.
 int softDebounce(int readCV, int oldRead)
 {
     if (abs(readCV - oldRead) > debounceRange)
@@ -36,19 +37,19 @@ void rightLongPressActions()
 {
 
     // REVERSE TIME *********************
-    int actual_A_Pot = map(analogRead(0), 0, 1023, -7, 7);
+    int actualLeftPot = map(analogRead(leftPotPin), 0, 1023, -7, 7);
 
-    if (old_A_Pot != actual_A_Pot)
+    if (oldLeftPot != actualLeftPot)
     {
 
-        shift_A_Pot = actual_A_Pot;
+        shiftLeftPot = actualLeftPot;
     }
-    old_A_Pot = actual_A_Pot;
+    oldLeftPot = actualLeftPot;
 
-    if (shift_A_Pot == 0)
+    if (shiftLeftPot == 0)
     {
         // prevents the engine to stop
-        shift_A_Pot = 1;
+        shiftLeftPot = 1;
     }
 }
 void leftLongPressActions()
@@ -58,7 +59,7 @@ void leftLongPressActions()
 
     old_SAMPLE_RATE = SAMPLE_RATE;
     // int actual_SAMPLE_RATE = analogRead(1);
-    SAMPLE_RATE = softDebounce(analogRead(0), SAMPLE_RATE);
+    SAMPLE_RATE = softDebounce(analogRead(leftPotPin), SAMPLE_RATE);
 
     // actual_SAMPLE_RATE=map(analogRead(1), 0, 1023, 256, 16384);
     if (SAMPLE_RATE != old_SAMPLE_RATE)
