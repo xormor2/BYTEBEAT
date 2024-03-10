@@ -8,8 +8,21 @@ void initSound()
 {
     pinMode(speakerPin, OUTPUT);
 
+    /*
+    Clear bits EXCLK and AS2 from ASSR (Asynchronous Status Register)
+
+    Bit 6 – EXCLK: Enable External Clock Input
+    When EXCLK is written to one, and asynchronous clock is selected, the external clock input buffer is enabled and an external clock
+    can be input on Timer Oscillator 1 (TOSC1) pin instead of a 32kHz crystal.
+
+    Bit 5 – AS2: Asynchronous Timer/Counter2
+    When AS2 is written to zero, Timer/Counter2 is clocked from the I/O clock, clkI/O. When AS2 is written to one, Timer/Counter2 is clocked from a crystal Oscillator connected to the Timer Oscillator pin.
+    */
     ASSR &= ~(_BV(EXCLK) | _BV(AS2));
 
+    /*
+    TCCR2A – Timer/Counter Control Register A
+    */
     TCCR2A |= _BV(WGM21) | _BV(WGM20);
     TCCR2B &= ~_BV(WGM22);
 

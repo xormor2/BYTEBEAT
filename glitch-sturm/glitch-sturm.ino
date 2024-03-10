@@ -62,7 +62,11 @@ byte old_C_Pot = 0;
 
 void setup()
 {
+
+  // ledPin isn't used at all, it's the builtin led.
   pinMode(ledPin, OUTPUT);
+
+  // These are the glitch storm 3 leds.
   pinMode(progBit0Pin, OUTPUT);
   pinMode(progBit1Pin, OUTPUT);
   pinMode(progBit2Pin, OUTPUT);
@@ -122,7 +126,11 @@ void printValues()
 
 ISR(TIMER1_COMPA_vect)
 {
-
+  /*
+  t is the increasing value of timer.
+  a, b, c are pins 0,1,2 values read and mapped to limits set by aTop and aBottom values
+  these pins are connected to the potentiometers. TODO: figure out which pin for which knob.
+  */
   switch (programNumber)
   {
   case 1:

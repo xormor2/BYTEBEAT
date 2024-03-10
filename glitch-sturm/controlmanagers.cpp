@@ -184,6 +184,7 @@ void potsManager()
 
     if (!isButton1Active && !isButton2Active)
     {
+        // map(value, fromLow, fromHigh, toLow, toHigh)
         a = map(analogRead(0), 0, 1023, aBottom, aTop);
         b = map(analogRead(1), 0, 1023, bBottom, bTop);
         c = map(analogRead(2), 0, 1023, cBottom, cTop);
