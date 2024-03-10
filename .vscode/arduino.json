@@ -1,0 +1,6 @@
+{
+    "sketch": "glitch-sturm/glitch-sturm.ino",
+    "configuration": "cpu=atmega328old",
+    "board": "arduino:avr:nano",
+    "port": "/dev/ttyUSB0"
+}

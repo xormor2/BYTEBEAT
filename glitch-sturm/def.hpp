@@ -1,0 +1,9 @@
+#define ledPin 13
+#define speakerPin 11
+#define upButtonPin 2
+#define downButtonPin 4
+#define progBit0Pin 7
+#define progBit1Pin 8
+#define progBit2Pin 9
+#define progBit3Pin 10
+#define isDebugging false
