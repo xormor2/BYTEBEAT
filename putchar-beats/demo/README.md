@@ -1,6 +1,8 @@
 # Demo
 
-A little demo of the sound generated
+A little demo of the sound generated. `mu5` is a x86_64 linux binary tone generator and `tune.mp3` is sample of the output
+
+### How this was done
 
 - Compile the programn `gcc mu5.c -o mu5` (the .c file is in the parent dir along with the others.)
 - Run the program, piping output to file `./mu5 > tune.pcm` Be quick, the tune is generated at
