@@ -6,6 +6,8 @@ You probably already have them, but if the gcc command doesn't work, install gcc
 
 Compile the .c files with gcc or clang (no dependencies besides libc) and run with `./binaryfile > /dev/dsp` (tested on Debian bookworm 12 stable).
 
+`playtune.c` takes a number 1-5 as a command line argument to choose the algo.
+
 ### Windows
 
 I honestly don't have a clue. Googling for "bytebeats windows" gives a whole bunch of results so maybe not all hope is lost, meanwhile check the demo.
