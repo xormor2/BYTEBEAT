@@ -6,7 +6,6 @@
 // Some equations are empty. You can collaborate sending your new finding cool sounding ones to the repository
 // https://github.com/spherical-sound-society/glitch-storm
 
-#include <stdint.h>
 #include <avr/interrupt.h>
 #include <avr/io.h>
 #include <avr/pgmspace.h>
@@ -89,6 +88,10 @@ void setup()
   {
     Serial.begin(9600);
   }
+  if (streamSerial)
+  {
+    Serial.begin(9600);
+  }
 }
 
 void loop()
@@ -105,6 +108,10 @@ void loop()
       time_now = millis();
       printValues();
     }
+  }
+  if (streamSerial)
+  {
+    Serial.write(value);
   }
 
   // This is a whole piece of code just commented out
