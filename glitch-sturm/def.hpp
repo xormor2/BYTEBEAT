@@ -14,4 +14,4 @@
 #define rightPotPin 2
 
 #define isDebugging false
-#define streamSerial true
+#define streamSerial false
