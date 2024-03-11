@@ -13,7 +13,6 @@ char mogrify(int t)
 }
 int main(int t)
 {
-
     for (;; t++)
     {
         putchar(mogrify(t));
