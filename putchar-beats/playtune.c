@@ -36,7 +36,7 @@ int main(int argc, char *argv[])
       for (;; t++)
         putchar(TUNE5);
     }
-    if (!strcmp("5", argv[1]))
+    else if (!strcmp("5", argv[1]))
     {
       for (;; t++)
         putchar(TUNE6);
