@@ -1,4 +1,4 @@
-# music_file.sh: a script to make music, copyleft 2024 xormor2
+# make_music.sh: a script to make music, copyleft 2024 xormor2
 #
 # The script is made chmod +x make_music.sh -v
 # and run with ./make_music.sh musicfile_without_file_extension.
